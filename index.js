@@ -2353,9 +2353,96 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         })();  // ← initMobilePerformanceGuard 结束
     }  // ← initMeowHud() 结束
     // ② 创建 HUD DOM（你之前已经有这部分，只是没调用 initMeowHud）
+        // 让 HUD 可拖拽：拖动标题栏（.bar-header）移动整个容器
+    function makeHudDraggable(container) {
+        const header = container.querySelector('.bar-header') || container; // 优先用标题栏
+        if (!header) return;
+
+        let isDown = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        // 初始位置：把 transform 去掉，用 left/top 固定住当前居中位置
+        function ensurePosition() {
+            const rect = container.getBoundingClientRect();
+            container.style.left = rect.left + 'px';
+            container.style.top = rect.top + 'px';
+            container.style.transform = 'none';
+        }
+
+        ensurePosition();
+
+        header.style.cursor = 'move';
+
+        header.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isDown = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = container.getBoundingClientRect();
+            startLeft = rect.left;
+            startTop = rect.top;
+            document.body.classList.add('meow-hud-dragging');
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            container.style.left = startLeft + dx + 'px';
+            container.style.top = startTop + dy + 'px';
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDown) return;
+            isDown = false;
+            document.body.classList.remove('meow-hud-dragging');
+        });
+
+        // 简单支持触摸
+        header.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            isDown = true;
+            startX = t.clientX;
+            startY = t.clientY;
+            const rect = container.getBoundingClientRect();
+            startLeft = rect.left;
+            startTop = rect.top;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            const t = e.touches[0];
+            const dx = t.clientX - startX;
+            const dy = t.clientY - startY;
+            container.style.left = startLeft + dx + 'px';
+            container.style.top = startTop + dy + 'px';
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            isDown = false;
+        }, { passive: true });
+    }
+    
+
     function createHudDom() {
         // 防止重复创建
         if (document.getElementById('meow-live-float-btn')) return;
+         document.body.appendChild(floatBtn);
+    document.body.appendChild(container);
+
+    // 让 HUD 可拖动
+    makeHudDraggable(container);
+
+    floatBtn.addEventListener('click', () => {
+        ...
+    });
+
+    console.log('[MeowLiveHUD] DOM 已插入（SillyTavern 模式）');
+}
+
 
         // 小球
         const floatBtn = document.createElement('div');
