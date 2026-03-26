@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MeowLive HUD</title>
+</head>
+<body>
+
 <!-- 悬浮小球 -->
 <div id="meow-live-float-btn" class="meow-float-btn" title="打开/关闭 猫猫面板">
     <div class="meow-float-icon">🐱</div>
@@ -7,121 +15,18 @@
 <div class="raw-data" id="rawData" style="display:none;"></div>
 <div id="copyToast" style="display:none;">指令已复制！</div>
 
-<!-- HUD 面板容器 (默认隐藏，由 JS 切换 .meow-hud-hidden) -->
+<!-- HUD 面板容器 (默认隐藏) -->
 <div id="meow-live-container" class="meow-hud-hidden">
     <div class="kt-safe-guard" id="ktSafeGuard">
         <div class="kitten-bar-wrapper" id="ktApp">
-            <div id="dirtLayer"></div>
-            <div id="creatureLayer"></div>
-
-            <div class="water-pool" id="waterPool">
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-            </div>
-
-            <!-- 顶部标题栏 -->
-            <div class="bar-header" id="hudHeaderToggle">
-                <div class="header-left">
-                    <div class="breath-dot" id="breathDot"></div>
-                    <div style="position:relative; display:flex; align-items:center;">
-                        <span class="title-magic-star" style="top: -2px; left: -10px;">✦</span>
-                        <div class="cat-compound" id="catGroup">
-                            <svg class="ahoge-svg" viewBox="0 0 20 16">
-                                <g class="ahoge-g">
-                                    <path id="ahogeShape" class="ahoge-path" d="M10,16 C10,6 2,4 6,1"></path>
-                                </g>
-                            </svg>
-                            <div class="ears-row">
-                                <div class="ear-soft l"></div>
-                                <div class="ear-soft r"></div>
-                            </div>
-                            <div class="kao-face" id="kaoText">OwO</div>
-                        </div>
-                        <span class="header-title-text" id="hudTitle" data-text="🍓Meow_Live💖">🍓Meow_Live💖</span>
-                    </div>
-                </div>
-                <div class="header-right" style="position:relative;">
-                    <span id="headerWhisper"></span>
-                    <span class="header-status-text" id="statusBrief">Connecting...</span>
-                    <span class="header-arrow">▼</span>
-                </div>
-            </div>
-
-            <!-- 称号胶囊 -->
-            <div class="badge-wrapper" id="titleBadgeWrapper" style="display: none;">
-                <div class="neon-pill-badge">
-                    <span class="badge-icon">✨</span>
-                    <span class="badge-text" id="titleBadgeText"></span>
-                </div>
-            </div>
-
-            <!-- ECG 心电图 -->
-            <div class="ecg-container ecg-normal" id="ecgMonitor">
-                <div class="ecg-label">ECG</div>
-                <div class="ecg-grid"></div>
-                <div class="ecg-wave-box" id="ecgWaveBox">
-                    <canvas id="ecgCanvas"></canvas>
-                </div>
-            </div>
-
-            <!-- 声波 -->
-            <div class="voice-wave-container vw-p1" id="voiceWave">
-                <div class="vw-label">VOICE</div>
-                <div class="vw-wave-box">
-                    <div class="vw-line"></div>
-                    <div class="vw-overlay"></div>
-                </div>
-            </div>
-
-            <!-- Admin 控制台（你原来的 GOD_SYSTEM） -->
-            <div class="admin-console-wrapper" id="adminConsole" onclick="event.stopPropagation()">
-                <div class="admin-title">⚠️ GOD_SYSTEM ⚠️</div>
-                <!-- 这里保留原本所有 .cmd-btn / details.admin-fold 结构 -->
-                <!-- 直接把你正则里的 admin-console-wrapper 内容粘到这里即可 -->
-            </div>
-
-            <!-- Tab 面板 -->
-            <div class="bar-panel" id="ktPanel">
-                <div class="panel-glow"></div>
-                <div class="panel-inner">
-                    <div class="nav-tabs" id="navTabs">
-                        <div class="nav-tabs-slider" id="navTabsSlider"></div>
-                        <div class="tab-btn active" data-target="tab-base" onclick="switchKtTab('tab-base', this, event)">🔮 状态</div>
-                        <div class="tab-btn" data-target="tab-daily" onclick="switchKtTab('tab-daily', this, event)">🌙 日常</div>
-                        <div class="tab-btn" data-target="tab-lover" id="tabIconLover" style="display:none;" onclick="switchKtTab('tab-lover', this, event)">💗 恋人</div>
-                        <div class="tab-btn" data-target="tab-relation" id="tabIconRelation" style="display:none;" onclick="switchKtTab('tab-relation', this, event)">💔 关系</div>
-                        <div class="tab-btn" data-target="tab-news" id="tabIconNews" style="display:none;" onclick="switchKtTab('tab-news', this, event)">🌐 资讯</div>
-                        <div class="tab-btn" data-target="tab-sys" id="tabIconSys" style="display:none;" onclick="switchKtTab('tab-sys', this, event)">💠 系统</div>
-                        <div class="tab-btn" data-target="tab-body" onclick="switchKtTab('tab-body', this, event)">🩺 肉体</div>
-                        <div class="tab-btn" data-target="tab-depr" onclick="switchKtTab('tab-depr', this, event)">😈 恶堕</div>
-                        <div class="tab-btn" data-target="tab-fluid" onclick="switchKtTab('tab-fluid', this, event)">💦 体液</div>
-                        <div class="tab-btn" data-target="tab-cycle" id="tabIconCycle" style="display:none;" onclick="switchKtTab('tab-cycle', this, event)">🩸 经期</div>
-                        <div class="tab-btn" data-target="tab-preg" onclick="switchKtTab('tab-preg', this, event)">🍼 孕育</div>
-                        <div class="tab-btn tab-btn-live" data-target="tab-live" id="tabIconLive" onclick="switchKtTab('tab-live', this, event)">☁️ 观测</div>
-                        <div class="tab-btn" data-target="tab-gaze" id="tabIconGaze" style="display:none;" onclick="switchKtTab('tab-gaze', this, event)">🌏 世界</div>
-                        <div class="tab-btn" data-target="tab-rule" onclick="switchKtTab('tab-rule', this, event)">📜 守则</div>
-                    </div>
-
-                    <div class="tab-content-container" id="swipeContainer">
-                        <div id="tab-base" class="tab-content active"></div>
-                        <div id="tab-daily" class="tab-content"></div>
-                        <div id="tab-lover" class="tab-content"></div>
-                        <div id="tab-relation" class="tab-content"></div>
-                        <div id="tab-news" class="tab-content"></div>
-                        <div id="tab-sys" class="tab-content"></div>
-                        <div id="tab-body" class="tab-content"></div>
-                        <div id="tab-depr" class="tab-content"></div>
-                        <div id="tab-fluid" class="tab-content"></div>
-                        <div id="tab-cycle" class="tab-content"></div>
-                        <div id="tab-preg" class="tab-content"></div>
-                        <div id="tab-live" class="tab-content"></div>
-                        <div id="tab-gaze" class="tab-content"></div>
-                        <div id="tab-rule" class="tab-content"></div>
-                        <div id="tab-escape" class="tab-content"></div>
-                    </div>
-                </div>
+            <!-- 这里先放一个简单的占位内容，确认能出来 -->
+            <div style="padding:10px;color:#fff;">
+                <h3>猫猫面板测试</h3>
+                <p>如果你看到这行字，说明主界面已经弹出来了。</p>
             </div>
         </div>
     </div>
 </div>
+
+</body>
+</html>
