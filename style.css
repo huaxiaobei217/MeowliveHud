@@ -24,17 +24,20 @@
     border-color: #ff7eb3;
 }
 
-/* HUD 主容器：右侧浮窗 */
+
+/* HUD 主容器：居中显示 */
 #meow-live-container {
     position: fixed;
-    right: 80px;
-    bottom: 20px;
+    left: 50%;
+    top: 50%;
     width: 460px;
     height: 85vh;
     max-width: 90vw;
+    transform: translate(-50%, -50%);
     z-index: 99998;
     background: transparent;
 }
+
 
 /* 默认隐藏类 */
 .meow-hud-hidden {
