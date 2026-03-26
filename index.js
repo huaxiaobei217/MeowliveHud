@@ -1,3 +1,4 @@
+console.log('👾扩展已加载！');
 import { getContext } from "../../../extensions.js";
 import { eventSource, event_types } from "../../../../script.js";
 
