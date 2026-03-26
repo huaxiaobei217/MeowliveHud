@@ -3,5 +3,7 @@
     "display_name": "猫猫悬浮面板 4.0",
     "description": "Meow_Live 4.0 独立悬浮窗版本，完美解决正则卡顿问题",
     "version": "1.0.0",
-    "author": "Meow"
+    "author": "Meow",
+    "js": "index.js",
+    "css": "style.css"
 }
