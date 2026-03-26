@@ -9,6 +9,71 @@
             fn();
         }
     }
+        // 小球拖拽：拖动 meow-live-float-btn
+    function makeFloatBtnDraggable(floatBtn) {
+        let isDown = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        // 初始：把当前居中位置固化为 left/top，并去掉 transform
+        function ensurePosition() {
+            const rect = floatBtn.getBoundingClientRect();
+            floatBtn.style.left = rect.left + 'px';
+            floatBtn.style.top = rect.top + 'px';
+            floatBtn.style.transform = 'none';
+        }
+
+        ensurePosition();
+
+        floatBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isDown = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = floatBtn.getBoundingClientRect();
+            startLeft = rect.left;
+            startTop = rect.top;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            floatBtn.style.left = startLeft + dx + 'px';
+            floatBtn.style.top = startTop + dy + 'px';
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+
+        // 触摸支持
+        floatBtn.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            isDown = true;
+            startX = t.clientX;
+            startY = t.clientY;
+            const rect = floatBtn.getBoundingClientRect();
+            startLeft = rect.left;
+            startTop = rect.top;
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            const t = e.touches[0];
+            const dx = t.clientX - startX;
+            const dy = t.clientY - startY;
+            floatBtn.style.left = startLeft + dx + 'px';
+            floatBtn.style.top = startTop + dy + 'px';
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            isDown = false;
+        }, { passive: true });
+    }
+
 
     function createHudDom() {
         // 防止重复创建
@@ -35,6 +100,7 @@
 
 
         `;
+        
 
         // 3. 把两个节点挂到 SillyTavern 页面上
         document.body.appendChild(floatBtn);
