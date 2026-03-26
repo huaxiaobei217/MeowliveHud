@@ -18,19 +18,13 @@
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     user-select: none;
 }
-
 #meow-live-float-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 0 20px #ff7eb3;
     border-color: #ff7eb3;
 }
 
-/* 小球里的图标，可以稍微调一下排版 */
-#meow-live-float-btn .meow-float-icon {
-    pointer-events: none;
-}
-
-/* HUD 主容器（挂在 index.html 里的那个） */
+/* HUD 主容器，在右侧 */
 #meow-live-container {
     position: fixed;
     right: 80px;
@@ -40,22 +34,14 @@
     max-width: 90vw;
     z-index: 99998;
     background: transparent;
-    /* 这里不要 pointer-events:none，否则面板里点不到 */
-    /* 可选：加点进入动画 */
-    transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
-    opacity: 1;
-    transform: translateY(0);
 }
 
-/* 默认隐藏时用这个类控制 */
+/* 默认隐藏 */
 .meow-hud-hidden {
     display: none;
 }
 
-/* 你内部的 HUD 根容器（kitten-bar-wrapper）可以再加点阴影/背景，不影响功能
-   这里只给一个基础示例，如果你在大 CSS 里已有完整美术，可以忽略这一段。*/
+/* 面板里简单做个背景 */
 #meow-live-container .kitten-bar-wrapper {
     position: relative;
     width: 100%;
@@ -63,7 +49,6 @@
     box-sizing: border-box;
     border-radius: 16px;
     overflow: hidden;
-    /* 确保 HUD 浮在上层内容之上 */
     box-shadow:
         0 0 20px rgba(0, 0, 0, 0.6),
         0 0 30px rgba(0, 245, 255, 0.3);
