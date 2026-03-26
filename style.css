@@ -24,7 +24,7 @@
     border-color: #ff7eb3;
 }
 
-/* HUD 主容器，在右侧 */
+/* HUD 主容器：右侧浮窗 */
 #meow-live-container {
     position: fixed;
     right: 80px;
@@ -36,12 +36,17 @@
     background: transparent;
 }
 
-/* 默认隐藏 */
+/* 默认隐藏类 */
 .meow-hud-hidden {
     display: none;
 }
 
-/* 面板里简单做个背景 */
+/* 面板简单背景 */
+#meow-live-container .kt-safe-guard {
+    width: 100%;
+    height: 100%;
+}
+
 #meow-live-container .kitten-bar-wrapper {
     position: relative;
     width: 100%;
@@ -53,4 +58,7 @@
         0 0 20px rgba(0, 0, 0, 0.6),
         0 0 30px rgba(0, 245, 255, 0.3);
     background: rgba(10, 10, 20, 0.95);
+    padding: 12px;
+    color: #fff;
+    font-family: system-ui, sans-serif;
 }
