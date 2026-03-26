@@ -1,4 +1,4 @@
-// SillyTavern 扩展入口：创建右下角小球 + 浮窗面板
+// SillyTavern 扩展入口：创建小球 + 浮窗面板
 // 文件名：index.js（manifest.json 里 js 指向它）
 
 (function () {
@@ -2352,10 +2352,9 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
 
         })();  // ← initMobilePerformanceGuard 结束
     }  // ← initMeowHud() 结束
-    // ② 创建 HUD DOM（你之前已经有这部分，只是没调用 initMeowHud）
-        // 让 HUD 可拖拽：拖动标题栏（.bar-header）移动整个容器
+    // ② 让 HUD 可拖拽：拖动标题栏（.bar-header）移动整个容器
     function makeHudDraggable(container) {
-        const header = container.querySelector('.bar-header') || container; // 优先用标题栏
+        const header = container.querySelector('.bar-header') || container;
         if (!header) return;
 
         let isDown = false;
@@ -2364,7 +2363,6 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         let startLeft = 0;
         let startTop = 0;
 
-        // 初始位置：把 transform 去掉，用 left/top 固定住当前居中位置
         function ensurePosition() {
             const rect = container.getBoundingClientRect();
             container.style.left = rect.left + 'px';
@@ -2384,7 +2382,6 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
             const rect = container.getBoundingClientRect();
             startLeft = rect.left;
             startTop = rect.top;
-            document.body.classList.add('meow-hud-dragging');
         });
 
         window.addEventListener('mousemove', (e) => {
@@ -2396,53 +2393,49 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         });
 
         window.addEventListener('mouseup', () => {
-            if (!isDown) return;
             isDown = false;
-            document.body.classList.remove('meow-hud-dragging');
         });
 
-        // 简单支持触摸
-        header.addEventListener('touchstart', (e) => {
-            const t = e.touches[0];
-            isDown = true;
-            startX = t.clientX;
-            startY = t.clientY;
-            const rect = container.getBoundingClientRect();
-            startLeft = rect.left;
-            startTop = rect.top;
-        }, { passive: true });
+        header.addEventListener(
+            'touchstart',
+            (e) => {
+                const t = e.touches[0];
+                isDown = true;
+                startX = t.clientX;
+                startY = t.clientY;
+                const rect = container.getBoundingClientRect();
+                startLeft = rect.left;
+                startTop = rect.top;
+            },
+            { passive: true }
+        );
 
-        window.addEventListener('touchmove', (e) => {
-            if (!isDown) return;
-            const t = e.touches[0];
-            const dx = t.clientX - startX;
-            const dy = t.clientY - startY;
-            container.style.left = startLeft + dx + 'px';
-            container.style.top = startTop + dy + 'px';
-        }, { passive: true });
+        window.addEventListener(
+            'touchmove',
+            (e) => {
+                if (!isDown) return;
+                const t = e.touches[0];
+                const dx = t.clientX - startX;
+                const dy = t.clientY - startY;
+                container.style.left = startLeft + dx + 'px';
+                container.style.top = startTop + dy + 'px';
+            },
+            { passive: true }
+        );
 
-        window.addEventListener('touchend', () => {
-            isDown = false;
-        }, { passive: true });
+        window.addEventListener(
+            'touchend',
+            () => {
+                isDown = false;
+            },
+            { passive: true }
+        );
     }
-    
 
+    // ③ 创建 HUD DOM：小球 + 面板
     function createHudDom() {
         // 防止重复创建
         if (document.getElementById('meow-live-float-btn')) return;
-         document.body.appendChild(floatBtn);
-    document.body.appendChild(container);
-
-    // 让 HUD 可拖动
-    makeHudDraggable(container);
-
-    floatBtn.addEventListener('click', () => {
-        ...
-    });
-
-    console.log('[MeowLiveHUD] DOM 已插入（SillyTavern 模式）');
-}
-
 
         // 小球
         const floatBtn = document.createElement('div');
@@ -2459,10 +2452,6 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         const container = document.createElement('div');
         container.id = 'meow-live-container';
         container.className = 'meow-hud-hidden';
-
-        // 这里的 innerHTML 已经是你从正则里抠出来的那坨 HUD HTML（我假设你已经塞好了）
-        // 如果你还有测试文字，记得改成完整 HUD 结构
-        container.innerHTML = `
 <div class="raw-data" id="rawData"></div>
 <div id="copyToast">指令已复制！</div>
 
@@ -2760,12 +2749,13 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         </div>
     </div>
 </div>
-</div><!-- kt-safe-guard 结束 -->        <!-- 这里是你之前已经粘好的 HUD HTML 整块 -->
-        <!-- 如果现在这里是完整的 HUD，保持不动即可 -->
         `;
 
         document.body.appendChild(floatBtn);
         document.body.appendChild(container);
+
+        // 居中后允许拖动
+        makeHudDraggable(container);
 
         // 点击：开关 + 首次初始化
         floatBtn.addEventListener('click', () => {
