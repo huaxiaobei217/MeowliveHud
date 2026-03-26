@@ -10,13 +10,14 @@
         }
     }
 
+    // ① 大脚本：从原网页 <script> 里拿出来，包在 initMeowHud 里面
     function initMeowHud() {
-    // 没找到 HUD 根节点就直接返回，避免在别的页面报错
-    const root = document.getElementById('ktApp');
-    if (!root) {
-        console.warn('[MeowLiveHUD] 未找到 #ktApp，HUD 初始化跳过');
-        return;
-    }
+        // 没找到 HUD 根节点就直接返回，避免在别的页面报错
+        const root = document.getElementById('ktApp');
+        if (!root) {
+            console.warn('[MeowLiveHUD] 未找到 #ktApp，HUD 初始化跳过');
+            return;
+        }
 
    // 🔧 全局热复写记忆缓存
 window.ktModifiedData = {};
@@ -2351,22 +2352,12 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
 
         })();  // ← initMobilePerformanceGuard 结束
     }  // ← initMeowHud() 结束
-
-
-    // ……后面的 renderTabs / ECG / 声波 / 异种特效 / 脱出模式 等都已经在原始脚本里，
-    // 你照着我这段模式，把整段 <script> 中的剩余内容也粘在 initMeowHud() 里面即可……
-
-    // 注意：不要再嵌套第二个 function initMeowHud，
-    // 也不要再加多余的大括号，保证最外层只包一层 function initMeowHud() { ... }。
-
-
-
-
+    // ② 创建 HUD DOM（你之前已经有这部分，只是没调用 initMeowHud）
     function createHudDom() {
         // 防止重复创建
         if (document.getElementById('meow-live-float-btn')) return;
 
-        // 1. 创建右下角小球
+        // 小球
         const floatBtn = document.createElement('div');
         floatBtn.id = 'meow-live-float-btn';
         floatBtn.className = 'meow-float-btn';
@@ -2377,13 +2368,15 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         icon.textContent = '🐱';
         floatBtn.appendChild(icon);
 
-        // 2. 创建 HUD 容器
+        // 面板容器
         const container = document.createElement('div');
         container.id = 'meow-live-container';
         container.className = 'meow-hud-hidden';
 
+        // 这里的 innerHTML 已经是你从正则里抠出来的那坨 HUD HTML（我假设你已经塞好了）
+        // 如果你还有测试文字，记得改成完整 HUD 结构
         container.innerHTML = `
-          <div class="raw-data" id="rawData"></div>
+<div class="raw-data" id="rawData"></div>
 <div id="copyToast">指令已复制！</div>
 
 <div class="kt-safe-guard" id="ktSafeGuard">
@@ -2680,38 +2673,34 @@ waterPool.style.setProperty('--pool-height', `${scaledBaiHeight}%`);waterPool.cl
         </div>
     </div>
 </div>
-</div><!-- kt-safe-guard 结束 -->
+</div><!-- kt-safe-guard 结束 -->        <!-- 这里是你之前已经粘好的 HUD HTML 整块 -->
+        <!-- 如果现在这里是完整的 HUD，保持不动即可 -->
         `;
 
-        // 3. 把两个节点挂到 SillyTavern 页面上
         document.body.appendChild(floatBtn);
         document.body.appendChild(container);
 
-        // 4. 绑定点击事件：开关面板
-       floatBtn.addEventListener('click', () => {
-    const hidden = container.classList.toggle('meow-hud-hidden');
-    console.log('[MeowLiveHUD] 面板现在：', hidden ? '隐藏' : '显示');
+        // 点击：开关 + 首次初始化
+        floatBtn.addEventListener('click', () => {
+            const hidden = container.classList.toggle('meow-hud-hidden');
+            console.log('[MeowLiveHUD] 面板现在：', hidden ? '隐藏' : '显示');
 
-    if (!hidden && !window.__meowHudInited) {
-        window.__meowHudInited = true;
-        try {
-            initMeowHud();
-            console.log('[MeowLiveHUD] initMeowHud 已执行');
-        } catch (e) {
-            console.error('[MeowLiveHUD] initMeowHud 运行失败:', e);
-        }
-    }
-});
-
+            if (!hidden && !window.__meowHudInited) {
+                window.__meowHudInited = true;
+                try {
+                    initMeowHud();
+                    console.log('[MeowLiveHUD] initMeowHud 已执行');
+                } catch (e) {
+                    console.error('[MeowLiveHUD] initMeowHud 运行失败:', e);
+                }
+            }
+        });
 
         console.log('[MeowLiveHUD] DOM 已插入（SillyTavern 模式）');
     }
 
     onReady(() => {
         console.log('[MeowLiveHUD] SillyTavern 扩展初始化');
-
-        // SillyTavern 主页面加载好之后再插入 DOM
-        // 这里简单一点：直接调用 createHudDom
         createHudDom();
     });
 })();
